@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Number to Words Converter</title>
+    <style>
+        /* Basic styling for centered container and inputs */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 320px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        input {
+            padding: 0.5rem;
+            width: 80%;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+        button {
+            padding: 0.6rem 1.2rem;
+            font-size: 1rem;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #4338ca;
+        }
+        .result {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background-color: #e0e7ff;
+            border-radius: 8px;
+            color: #1e3a8a;
+            font-weight: bold;
+            min-height: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Number to Words</h1>
+        <input type="text" id="numberInput" placeholder="Enter a number" />
+        <br />
+        <button onclick="convertNumber()">Convert</button>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        // Fetch converted words from server and display result
+        async function convertNumber() {
+            const number = document.getElementById('numberInput').value.trim();
+            
+            if (!number) {
+                document.getElementById('result').innerText = "Please enter a number.";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/convert?number=${encodeURIComponent(number)}`);
+                if (!response.ok) {
+                    // Handle bad requests like invalid number format
+                    const errorText = await response.text();
+                    throw new Error(errorText || "Invalid number format");
+                }
+                const text = await response.text();
+                document.getElementById('result').innerText = text;
+            } catch (error) {
+                document.getElementById('result').innerText = error.message;
+            }
+        }
+    </script>
+</body>
+</html>
